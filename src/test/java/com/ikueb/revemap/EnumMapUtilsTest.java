@@ -177,4 +177,13 @@ public class EnumMapUtilsTest {
         EnumMapUtils.createReverseEnumMap(Alphabet.class, (value) -> 0);
     }
 
+    @Test(expectedExceptions = NullPointerException.class)
+    public void testNullArgument() throws Throwable {
+        try {
+            EnumMapUtils.convertToSimpleEnumMap(null);
+        } catch (IllegalArgumentException e) {
+            throw e.getCause();
+        }
+    }
+
 }

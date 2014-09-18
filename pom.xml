@@ -1,9 +1,12 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>com.fiftytwo.minutes</groupId>
+	<groupId>com.ikueb</groupId>
 	<artifactId>revemap</artifactId>
 	<version>0.1.0-SNAPSHOT</version>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
 	<build>
 		<plugins>
 			<plugin>
@@ -14,6 +17,23 @@
 					<target>1.8</target>
 				</configuration>
 			</plugin>
+			<!-- FIXME 
+					to be introduced once 2.10 is available publicly
+					staging repo is having some problems now:
+						https://repository.apache.org/content/repositories/maven-1061/
+					more info: 
+						http://jira.codehaus.org/browse/MJAVADOC-395
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<version>2.10</version>
+				<configuration>
+					<additionalparam>-Xdoclint:none</additionalparam>
+					<bottom>Apache License 2.0</bottom>
+					<show>private</show>
+				</configuration>
+			</plugin>
+			-->
 		</plugins>
 	</build>
 	<dependencies>
@@ -40,4 +60,13 @@
 			<version>1.1.2</version>
 		</dependency>
 	</dependencies>
+	<!-- 
+	<pluginRepositories>
+		<pluginRepository>
+			<id>apache-maven-staging</id>
+			<name>Apache Maven Staging</name>
+			<url>https://repository.apache.org/content/repositories/maven-1061/</url>
+		</pluginRepository>
+	</pluginRepositories>
+	 -->
 </project>

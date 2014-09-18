@@ -38,6 +38,9 @@ public final class EnumMapUtils {
      * The merge function used to resolve collisions between values associated with the same key
      * picks the later one.
      *
+     * @param <T> the input {@link Set} type.
+     * @param <K> the required key type.
+     * @param <V> the required value type.
      * @param set the {@link Set} to stream on.
      * @param keyMapper the {@link Function} to use for deriving keys of type <code>K</code> from
      *            the {@link Set}'s elements.
@@ -62,6 +65,7 @@ public final class EnumMapUtils {
      * Gets the {@link Enum}'s values via reflection. All checked {@link Exception}s are wrapped and
      * thrown as {@link RuntimeException}s.
      *
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @return a {@link Set} containing the {@link Enum}'s values.
      */
@@ -84,11 +88,11 @@ public final class EnumMapUtils {
      */
     private static void validateArguments(final Object... args) {
         if (args == null) {
-            throw new IllegalArgumentException();
+            throw new IllegalArgumentException(new NullPointerException());
         }
         for (final Object o : args) {
             if (o == null) {
-                throw new IllegalArgumentException();
+                throw new IllegalArgumentException(new NullPointerException());
             }
         }
     }
@@ -101,6 +105,8 @@ public final class EnumMapUtils {
      * Internally, {@link EnumMap} is the implementation for the resulting {@link Map}, and values
      * for the {@link Set} are accumulated with {@link Collectors#toSet()}.
      *
+     * @param <T> the key type of the source {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @param map the {@link Map} with mappings <code>T &#8594; E</code>.
      * @return a {@link Map} with mappings <code>E &#8594; Set&lt;T&gt;</code>.
@@ -129,7 +135,8 @@ public final class EnumMapUtils {
      * <p>
      * Internally, {@link EnumMap} is the implementation for the resulting {@link Map}.
      *
-     * @param forEnum the {@link Enum} to represent.
+     * @param <T> the key type of the source {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param map the {@link Map} with mappings <code>T &#8594; E</code>.
      * @return a {@link Map} with mappings <code>E &#8594; T</code>.
      * @see #convertToEnumMap(Class, Map)
@@ -143,6 +150,8 @@ public final class EnumMapUtils {
      * Creates a {@link Map} with mappings <code>E &#8594; T</code>, where values are derived using
      * a {@link Function}.
      *
+     * @param <T> the value type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use to derive the values for the resulting
      *            {@link Map}.
@@ -160,6 +169,8 @@ public final class EnumMapUtils {
      * <p>
      * Internally, {@link EnumMap} is the implementation for the resulting {@link Map}.
      *
+     * @param <T> the value type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param enumSet the {@link Set} of {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use to derive the values for the resulting
      *            {@link Map}.
@@ -172,9 +183,10 @@ public final class EnumMapUtils {
     }
 
     /**
-     * Creates a {@link Map} with <code>E</code> as the keys and E.{@link #toString()} for the
-     * values.
+     * Creates a {@link Map} with <code>E</code> as the keys and <code>E</code>'s
+     * {@link #toString()} for the values.
      *
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @return a {@link Map} with mappings <code>E &#8594; String</code>.
      * @see #createEnumMap(Set)
@@ -184,12 +196,13 @@ public final class EnumMapUtils {
     }
 
     /**
-     * Creates a {@link Map} with <code>E</code> as the keys and E.{@link #toString()} for the
-     * values.
+     * Creates a {@link Map} with <code>E</code> as the keys and <code>E</code>'s
+     * {@link #toString()} for the values.
      *
+     * @param <E> the {@link Enum} type.
      * @param enumSet the {@link Set} of {@link Enum} to represent.
      * @return a {@link Map} with mappings <code>E &#8594; String</code>.
-     * @see #createEnumMap(Class, EnumMapper)
+     * @see #createEnumMap(Class, Function)
      */
     public static <E extends Enum<E>> Map<E, String> createEnumMap(final Set<E> enumSet) {
         return createEnumMap(enumSet, (value) -> value.toString());
@@ -201,6 +214,8 @@ public final class EnumMapUtils {
      * <p>
      * Internally, {@link HashMap} is the implementation for the resulting {@link Map}.
      *
+     * @param <T> the key type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use for deriving the {@link Map}'s keys.
      * @return a {@link Map} with mappings <code>T &#8594; E</code>.
@@ -218,6 +233,8 @@ public final class EnumMapUtils {
      * <p>
      * Internally, {@link HashMap} is the implementation for the resulting {@link Map}.
      *
+     * @param <T> the key type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param enumSet the {@link Set} of {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use for deriving the {@link Map}'s keys.
      * @return a {@link Map} with mappings <code>T &#8594; E</code>.
@@ -230,13 +247,15 @@ public final class EnumMapUtils {
     }
 
     /**
-     * Creates a {@link Map} with <code>E</code>.{@link #toString()} for the keys and <code>E</code>
-     * as the values.
+     * Creates a {@link Map} with <code>E</code>'s {@link #toString()} for the keys and
+     * <code>E</code> as the values.
      *
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @return a {@link Map} with mappings <code>String &#8594; E</code>.
      * @see #createReverseEnumMap(Set)
-     * @throws DuplicateKeysException if <code>E</code>.{@link #toString()} produces duplicate keys.
+     * @throws DuplicateKeysException if <code>E</code>'s {@link #toString()} produces duplicate
+     *             keys.
      */
     public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(final Class<E> forEnum) {
         return createReverseEnumMap(getEnumValues(forEnum));
@@ -245,6 +264,8 @@ public final class EnumMapUtils {
     /**
      * Reverses the <code>E &#8594; T</code> mappings of <code>map</code>.
      *
+     * @param <T> the key type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param map the {@link Map} to derive the mappings from.
      * @return a {@link Map} with mappings <code>T &#8594; E</code>.
      * @throws DuplicateKeysException if there is more than one <code>E &#8594; T</code> mapping,
@@ -256,13 +277,15 @@ public final class EnumMapUtils {
     }
 
     /**
-     * Creates a {@link Map} with <code>E</code>.{@link #toString()} for the keys and <code>E</code>
-     * as the values.
+     * Creates a {@link Map} with <code>E</code>'s {@link #toString()} for the keys and
+     * <code>E</code> as the values.
      *
+     * @param <E> the {@link Enum} type.
      * @param enumSet the {@link Set} of {@link Enum} to represent.
      * @return a {@link Map} with mappings <code>String &#8594; E</code>.
      * @see #createReverseEnumMap(Set, Function)
-     * @throws DuplicateKeysException if <code>E</code>.{@link #toString()} produces duplicate keys.
+     * @throws DuplicateKeysException if <code>E</code>'s {@link #toString()} produces duplicate
+     *             keys.
      */
     public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(final Set<E> enumSet) {
         return createReverseEnumMap(enumSet, (value) -> value.toString());
@@ -272,6 +295,8 @@ public final class EnumMapUtils {
      * Modifies a {@link Map} by putting mappings <code>T &#8594; E</code>, where keys are derived
      * using a {@link Function}.
      *
+     * @param <T> the key type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param forEnum the {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use for deriving the {@link Map}'s keys.
      * @param result the {@link Map} to put the mappings to.
@@ -288,6 +313,8 @@ public final class EnumMapUtils {
      * Modifies a {@link Map} by putting mappings <code>T &#8594; E</code>, where keys are derived
      * using a {@link Function}.
      *
+     * @param <T> the key type of the resulting {@link Map}.
+     * @param <E> the {@link Enum} type.
      * @param enumSet the {@link Set} of {@link Enum} to represent.
      * @param enumMapper the {@link Function} to use for deriving the {@link Map}'s keys.
      * @param result the {@link Map} to put the mappings to.
