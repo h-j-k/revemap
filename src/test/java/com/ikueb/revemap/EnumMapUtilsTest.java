@@ -41,7 +41,7 @@ public class EnumMapUtilsTest {
     static final Map<Object, Alphabet> SOURCE = objectToEnumMap(new HashMap<>(),
             Alphabet::getAsciiValue, LAST_FUNCTION);
     static final Map<Alphabet, Set<Object>> EXPECTED = mapValues(ALL,
-            (value) -> newSet(value.getAsciiValue(), value.toString()));
+            (value) -> newSet(Integer.valueOf(value.getAsciiValue()), value.toString()));
     static final Map<Alphabet, Object> EXPECTED_SIMPLE = mapValues(ALL, LAST_FUNCTION);
 
     static enum Alphabet {
@@ -157,11 +157,12 @@ public class EnumMapUtilsTest {
      * @return a new {@link TreeMap}.
      */
     private static Map<Integer, Alphabet> newDescendingTreeMap(final Map<Integer, Alphabet> map) {
-        final Map<Integer, Alphabet> expected = new TreeMap<>((first, second) -> second - first);
+        final Map<Integer, Alphabet> result = new TreeMap<>((first, second) -> second.intValue()
+                - first.intValue());
         if (map != null) {
-            expected.putAll(map);
+            result.putAll(map);
         }
-        return expected;
+        return result;
     }
 
     @DataProvider(name = "test-cases")
@@ -176,7 +177,7 @@ public class EnumMapUtilsTest {
 
     @Test(expectedExceptions = EnumMapUtils.DuplicateKeysException.class)
     public void testBadKeyMapper() {
-        EnumMapUtils.createReverseEnumMap(Alphabet.class, (value) -> 0);
+        EnumMapUtils.createReverseEnumMap(Alphabet.class, (value) -> Integer.valueOf(0));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
