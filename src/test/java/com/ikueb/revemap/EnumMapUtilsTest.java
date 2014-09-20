@@ -95,7 +95,8 @@ public class EnumMapUtilsTest {
     }
 
     /**
-     * Creates a {@link Map} by deriving keys from a {@link Set} of {@link Alphabet} enums as values.
+     * Creates a {@link Map} by deriving keys from a {@link Set} of {@link Alphabet} enums as
+     * values.
      *
      * @param set the {@link Set} of {@link Alphabet} {@link Enum}s to use as values.
      * @param keyMapper the {@link Function} to use for deriving keys per {@link Enum} value.
@@ -107,7 +108,8 @@ public class EnumMapUtilsTest {
     }
 
     /**
-     * Creates a {@link Map} by deriving values from a {@link Set} of {@link Alphabet} enums as keys.
+     * Creates a {@link Map} by deriving values from a {@link Set} of {@link Alphabet} enums as
+     * keys.
      *
      * @param set the {@link Set} of {@link Alphabet} {@link Enum}s to use as keys.
      * @param valueMapper the {@link Function} to use for deriving values per {@link Enum} key.
