@@ -41,7 +41,7 @@ public class EnumMapUtilsTest {
     static final Map<Object, Alphabet> SOURCE = objectToEnumMap(new HashMap<>(),
             Alphabet::getAsciiValue, LAST_FUNCTION);
     static final Map<Alphabet, Set<Object>> EXPECTED = mapValues(ALL,
-            (value) -> newSet(Integer.valueOf(value.getAsciiValue()), value.toString()));
+            v -> newSet(Integer.valueOf(v.getAsciiValue()), v.toString()));
     static final Map<Alphabet, Object> EXPECTED_SIMPLE = mapValues(ALL, LAST_FUNCTION);
 
     static enum Alphabet {
@@ -53,7 +53,7 @@ public class EnumMapUtilsTest {
 
         @Override
         public String toString() {
-            return ((char) getAsciiValue()) + super.toString().substring(1).toLowerCase();
+            return ((char) getAsciiValue()) + name().substring(1).toLowerCase();
         }
     }
 
@@ -90,33 +90,37 @@ public class EnumMapUtilsTest {
         void verify() {
             assertThat(result, equalTo(expected));
             log.debug("Results for testing {}:", toString());
-            result.forEach((key, value) -> log.debug("Key [{}] => Value [{}]", key, value));
+            result.forEach((k, v) -> log.debug("Key [{}] => Value [{}]", k, v));
         }
     }
 
     /**
-     * Creates a {@link Map} by deriving keys from a {@link Set} of {@link Alphabet} enums as
-     * values.
+     * Creates a {@link Map} by mapping keys from a {@link Set} of {@code enums}.
      *
-     * @param set the {@link Set} of {@link Alphabet} {@link Enum}s to use as values.
-     * @param keyMapper the {@link Function} to use for deriving keys per {@link Enum} value.
-     * @return a {@link Map} with mappings <code>K &#8594; Alphabet</code>.
+     * @param <E> the {@code enum} type.
+     * @param <K> the required key type.
+     * @param set the {@link Set} of {@code enums} to use as values.
+     * @param keyMapper the {@link Function} to use for mapping keys per {@code enum}
+     *            value.
+     * @return a {@link Map} with mappings {@code K → Enum}.
      */
-    private static <K> Map<K, Alphabet> mapKeys(final Set<Alphabet> set,
-            final Function<Alphabet, K> keyMapper) {
+    private static <E extends Enum<E>, K> Map<K, E> mapKeys(final Set<E> set,
+            final Function<E, K> keyMapper) {
         return set.stream().collect(Collectors.toMap(keyMapper, Function.identity()));
     }
 
     /**
-     * Creates a {@link Map} by deriving values from a {@link Set} of {@link Alphabet} enums as
-     * keys.
+     * Creates a {@link Map} by mapping values from a {@link Set} of {@code enums}.
      *
-     * @param set the {@link Set} of {@link Alphabet} {@link Enum}s to use as keys.
-     * @param valueMapper the {@link Function} to use for deriving values per {@link Enum} key.
-     * @return a {@link Map} with mappings <code>Alphabet &#8594; V</code>.
+     * @param <E> the {@code enum} type.
+     * @param <V> the required value type.
+     * @param set the {@link Set} of {@code enum} to use as keys.
+     * @param valueMapper the {@link Function} to use for mapping values per
+     *            {@code enum} key.
+     * @return a {@link Map} with mappings {@code Enum → V}.
      */
-    private static <V> Map<Alphabet, V> mapValues(final Set<Alphabet> set,
-            final Function<Alphabet, V> valueMapper) {
+    private static <E extends Enum<E>, V> Map<E, V> mapValues(final Set<E> set,
+            final Function<E, V> valueMapper) {
         return new EnumMap<>(set.stream().collect(
                 Collectors.toMap(Function.identity(), valueMapper)));
     }
@@ -125,27 +129,25 @@ public class EnumMapUtilsTest {
      * Wrapper method for creating a {@link Set} from an array.
      *
      * @param values the values to create a {@link Set} for.
-     * @return a {@link Set} containing <code>values</code>.
+     * @return a {@link Set} containing {@code values}.
      */
     private static <T> Set<T> newSet(final T... values) {
         return Stream.of(values).collect(Collectors.toSet());
     }
 
     /**
-     * Iteratively calls {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)} with each
-     * element of <code>enumMappers</code>.
+     * Iteratively calls {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)}
+     * with each element of {@code enumMappers}.
      *
      * @param result the {@link Map} to use in
      *            {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)}.
-     * @param enumMappers the {@link Function}s to use for
+     * @param mappers the {@link Function}s to use for
      *            {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)}.
-     * @return the <code>result</code> {@link Map}.
+     * @return the {@code result} {@link Map}.
      */
     private static Map<Object, Alphabet> objectToEnumMap(final Map<Object, Alphabet> result,
-            final Function<Alphabet, Object>... enumMappers) {
-        for (final Function<Alphabet, Object> current : enumMappers) {
-            EnumMapUtils.modifyReverseEnumMap(Alphabet.class, current, result);
-        }
+            final Function<Alphabet, Object>... mappers) {
+        Stream.of(mappers).forEach(m -> EnumMapUtils.modifyReverseEnumMap(Alphabet.class, m, result));
         return result;
     }
 
@@ -157,8 +159,8 @@ public class EnumMapUtilsTest {
      * @return a new {@link TreeMap}.
      */
     private static Map<Integer, Alphabet> newDescendingTreeMap(final Map<Integer, Alphabet> map) {
-        final Map<Integer, Alphabet> result = new TreeMap<>((first, second) -> second.intValue()
-                - first.intValue());
+        final Map<Integer, Alphabet> result = new TreeMap<>((a, b) -> b.intValue()
+                - a.intValue());
         if (map != null) {
             result.putAll(map);
         }
@@ -167,17 +169,17 @@ public class EnumMapUtilsTest {
 
     @DataProvider(name = "test-cases")
     public Iterator<Object[]> getTestCases() {
-        return Stream.of(TestCase.values()).map((current) -> new Object[] { current }).iterator();
+        return Stream.of(TestCase.values()).map(v -> new Object[] { v }).iterator();
     }
 
     @Test(dataProvider = "test-cases")
-    public void testCase(final TestCase current) {
-        current.verify();
+    public void testCase(final TestCase testCase) {
+        testCase.verify();
     }
 
     @Test(expectedExceptions = EnumMapUtils.DuplicateKeysException.class)
     public void testBadKeyMapper() {
-        EnumMapUtils.createReverseEnumMap(Alphabet.class, (value) -> Integer.valueOf(0));
+        EnumMapUtils.createReverseEnumMap(Alphabet.class, value -> Integer.valueOf(0));
     }
 
     @Test(expectedExceptions = NullPointerException.class)
@@ -188,5 +190,4 @@ public class EnumMapUtilsTest {
             throw e.getCause();
         }
     }
-
 }
