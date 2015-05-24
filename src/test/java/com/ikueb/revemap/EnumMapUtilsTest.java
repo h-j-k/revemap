@@ -1,3 +1,18 @@
+/*
+ * Copyright 2015 h-j-k. All Rights Reserved.
+ *
+ * Licensed under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *     http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package com.ikueb.revemap;
 
 import static org.hamcrest.MatcherAssert.assertThat;
@@ -44,7 +59,7 @@ public class EnumMapUtilsTest {
             v -> newSet(Integer.valueOf(v.getAsciiValue()), v.toString()));
     static final Map<Alphabet, Object> EXPECTED_SIMPLE = mapValues(ALL, LAST_FUNCTION);
 
-    static enum Alphabet {
+    enum Alphabet {
         ALFA, BRAVO, CHARLIE;
 
         int getAsciiValue() {
@@ -57,7 +72,7 @@ public class EnumMapUtilsTest {
         }
     }
 
-    static enum TestCase {
+    enum TestCase {
         CONVERT_TO_ENUM_MAP(EnumMapUtils.convertToEnumMap(Alphabet.class, SOURCE), EXPECTED),
         CONVERT_TO_SIMPLE_ENUM_MAP(EnumMapUtils.convertToSimpleEnumMap(SOURCE), EXPECTED_SIMPLE),
         MAP_ENUM_TO_INTEGER(EnumMapUtils.createEnumMap(Alphabet.class, GET_ASCII), ENUM_TO_INT),
@@ -74,10 +89,10 @@ public class EnumMapUtilsTest {
         MODIFY_RANGE_REVERSE_MAP(EnumMapUtils.modifyReverseEnumMap(RANGE, GET_ASCII,
                 newDescendingTreeMap(null)), newDescendingTreeMap(mapKeys(RANGE, GET_ASCII)));
 
-        final Map<?, ?> result;
-        final Map<?, ?> expected;
+        private final Map<?, ?> result;
+        private final Map<?, ?> expected;
 
-        <K, V> TestCase(final Map<K, V> result, Map<K, V> expected) {
+        <K, V> TestCase(Map<K, V> result, Map<K, V> expected) {
             this.result = result;
             this.expected = expected;
         }
@@ -104,8 +119,8 @@ public class EnumMapUtilsTest {
      *            value.
      * @return a {@link Map} with mappings {@code K → Enum}.
      */
-    private static <E extends Enum<E>, K> Map<K, E> mapKeys(final Set<E> set,
-            final Function<E, K> keyMapper) {
+    private static <E extends Enum<E>, K> Map<K, E> mapKeys(Set<E> set,
+            Function<E, K> keyMapper) {
         return set.stream().collect(Collectors.toMap(keyMapper, Function.identity()));
     }
 
@@ -119,8 +134,8 @@ public class EnumMapUtilsTest {
      *            {@code enum} key.
      * @return a {@link Map} with mappings {@code Enum → V}.
      */
-    private static <E extends Enum<E>, V> Map<E, V> mapValues(final Set<E> set,
-            final Function<E, V> valueMapper) {
+    private static <E extends Enum<E>, V> Map<E, V> mapValues(Set<E> set,
+            Function<E, V> valueMapper) {
         return new EnumMap<>(set.stream().collect(
                 Collectors.toMap(Function.identity(), valueMapper)));
     }
@@ -131,7 +146,7 @@ public class EnumMapUtilsTest {
      * @param values the values to create a {@link Set} for.
      * @return a {@link Set} containing {@code values}.
      */
-    private static <T> Set<T> newSet(final T... values) {
+    private static <T> Set<T> newSet(T... values) {
         return Stream.of(values).collect(Collectors.toSet());
     }
 
@@ -145,8 +160,8 @@ public class EnumMapUtilsTest {
      *            {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)}.
      * @return the {@code result} {@link Map}.
      */
-    private static Map<Object, Alphabet> objectToEnumMap(final Map<Object, Alphabet> result,
-            final Function<Alphabet, Object>... mappers) {
+    private static Map<Object, Alphabet> objectToEnumMap(Map<Object, Alphabet> result,
+            Function<Alphabet, Object>... mappers) {
         Stream.of(mappers).forEach(m -> EnumMapUtils.modifyReverseEnumMap(Alphabet.class, m, result));
         return result;
     }
@@ -158,9 +173,8 @@ public class EnumMapUtilsTest {
      * @param map passed to {@link Map#putAll(Map)} if not null.
      * @return a new {@link TreeMap}.
      */
-    private static Map<Integer, Alphabet> newDescendingTreeMap(final Map<Integer, Alphabet> map) {
-        final Map<Integer, Alphabet> result = new TreeMap<>((a, b) -> b.intValue()
-                - a.intValue());
+    private static Map<Integer, Alphabet> newDescendingTreeMap(Map<Integer, Alphabet> map) {
+        Map<Integer, Alphabet> result = new TreeMap<>((a, b) -> b.intValue() - a.intValue());
         if (map != null) {
             result.putAll(map);
         }
@@ -169,7 +183,7 @@ public class EnumMapUtilsTest {
 
     @DataProvider(name = "test-cases")
     public Iterator<Object[]> getTestCases() {
-        return Stream.of(TestCase.values()).map(v -> new Object[] { v }).iterator();
+        return EnumSet.allOf(TestCase.class).stream().map(v -> new Object[] { v }).iterator();
     }
 
     @Test(dataProvider = "test-cases")
