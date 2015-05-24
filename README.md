@@ -17,19 +17,20 @@ Creating a `Map<String, Enum>` lookup map in the good old days resembles the fol
 
 Java 8's `Stream` simplifies that somewhat:
 
-    public static final Map<String, Enum> LOOKUP = EnumSet.allOf(MyEnum.class).stream()
-                                                    .collect(Collectors.toMap(MyEnum::getDescription,
-                                                                Function.identity()));
+    public static final Map<String, Enum> LOOKUP = 
+        EnumSet.allOf(MyEnum.class).stream().collect(
+            Collectors.toMap(MyEnum::getDescription, Function.identity()));
 
 Revemap's `EnumMapUtils` class is doing that under-the-hood to simplify the invocation:
 
-    public static final Map<String, Enum> LOOKUP = EnumMapUtils.createReverseEnumMap(MyEnum.class);
+    public static final Map<String, Enum> LOOKUP = 
+        EnumMapUtils.createReverseEnumMap(MyEnum.class);
 
 In addition to the simplified example above, Revemap handles the following too:
 
 * Converting a `Map<T, Enum>` map to be keyed by the `enum` values, with implementations to handle duplicate values.
 * Create `EnumMap`s with the `enum`s' `toString()` as map values.
-* Creating `Map<T, Enum>` maps provided a `Function<Enum, T> mapper` for the keys.
+* Creating `Map<T, Enum>` maps given a `Function<Enum, T> mapper` for the keys.
 
 Bugs/feedback
 ---
