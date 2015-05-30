@@ -16,6 +16,7 @@
 package com.ikueb.revemap;
 
 import java.util.EnumMap;
+import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -72,23 +73,6 @@ public final class EnumMapUtils {
         return Optional.of(set.stream().collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b)))
                 .filter(m -> checkDuplicateKeys ? m.size() == set.size() : true)
                 .orElseThrow(DuplicateKeysException::new);
-    }
-
-    /**
-     * Gets the {@code enum}'s values via reflection. All checked {@link Exception}s are
-     * wrapped and thrown as {@link RuntimeException}s.
-     *
-     * @param <E> the {@code enum} type.
-     * @param forEnum the {@code enum} to represent.
-     * @return a {@link Set} containing the {@code enum}'s values.
-     */
-    private static <E extends Enum<E>> Set<E> getEnumValues(final Class<E> forEnum) {
-        validateArguments(forEnum);
-        try {
-            return Stream.of(forEnum.getEnumConstants()).collect(Collectors.toSet());
-        } catch (SecurityException | IllegalArgumentException e) {
-            throw new RuntimeException(e);
-        }
     }
 
     /**
@@ -163,7 +147,7 @@ public final class EnumMapUtils {
      */
     public static <T, E extends Enum<E>> Map<E, T> createEnumMap(final Class<E> forEnum,
             final Function<E, T> enumMapper) {
-        return createEnumMap(getEnumValues(forEnum), enumMapper);
+        return createEnumMap(EnumSet.allOf(forEnum), enumMapper);
     }
 
     /**
@@ -195,7 +179,7 @@ public final class EnumMapUtils {
      * @see #createEnumMap(Set)
      */
     public static <E extends Enum<E>> Map<E, String> createEnumMap(final Class<E> forEnum) {
-        return createEnumMap(getEnumValues(forEnum));
+        return createEnumMap(EnumSet.allOf(forEnum));
     }
 
     /**
@@ -227,7 +211,7 @@ public final class EnumMapUtils {
      */
     public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(final Class<E> forEnum,
             final Function<E, T> enumMapper) {
-        return createReverseEnumMap(getEnumValues(forEnum), enumMapper);
+        return createReverseEnumMap(EnumSet.allOf(forEnum), enumMapper);
     }
 
     /**
@@ -261,7 +245,7 @@ public final class EnumMapUtils {
      *             duplicate keys.
      */
     public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(final Class<E> forEnum) {
-        return createReverseEnumMap(getEnumValues(forEnum));
+        return createReverseEnumMap(EnumSet.allOf(forEnum));
     }
 
     /**
@@ -309,7 +293,7 @@ public final class EnumMapUtils {
      */
     public static <T, E extends Enum<E>> Map<T, E> modifyReverseEnumMap(final Class<E> forEnum,
             final Function<E, T> enumMapper, final Map<T, E> result) {
-        return modifyReverseEnumMap(getEnumValues(forEnum), enumMapper, result);
+        return modifyReverseEnumMap(EnumSet.allOf(forEnum), enumMapper, result);
     }
 
     /**
