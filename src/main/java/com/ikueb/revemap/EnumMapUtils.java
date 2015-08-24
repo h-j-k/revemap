@@ -71,7 +71,7 @@ public final class EnumMapUtils {
     private static <T, K, V> Map<K, V> doMap(final Set<T> set, final Function<T, K> keyMapper,
             final Function<T, V> valueMapper, boolean checkDuplicateKeys) {
         return Optional.of(set.stream().collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b)))
-                .filter(m -> checkDuplicateKeys ? m.size() == set.size() : true)
+                .filter(m -> !checkDuplicateKeys || m.size() == set.size())
                 .orElseThrow(DuplicateKeysException::new);
     }
 
@@ -82,7 +82,7 @@ public final class EnumMapUtils {
      * @param args the arguments to check for {@code null}.
      */
     private static void validateArguments(final Object... args) {
-        if (args == null || !Stream.of(args).allMatch(Objects::nonNull)) {
+        if (Objects.isNull(args) || !Stream.of(args).allMatch(Objects::nonNull)) {
             throw new IllegalArgumentException(new NullPointerException());
         }
     }
@@ -108,10 +108,9 @@ public final class EnumMapUtils {
     public static <T, E extends Enum<E>> Map<E, Set<T>> convertToEnumMap(final Class<E> forEnum,
             final Map<T, E> map) {
         validateArguments(forEnum, map);
-        final Map<E, Set<T>> result = new EnumMap<>(forEnum);
-        result.putAll(map.entrySet().stream().collect(Collectors.groupingBy(Entry::getValue,
-                                    Collectors.mapping(Entry::getKey, Collectors.toSet()))));
-        return result;
+        return map.entrySet().stream().collect(Collectors.groupingBy(Entry::getValue,
+                                () -> new EnumMap<>(forEnum),
+                                Collectors.mapping(Entry::getKey, Collectors.toSet())));
     }
 
     /**

@@ -23,6 +23,7 @@ import java.util.EnumSet;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+import java.util.Optional;
 import java.util.Set;
 import java.util.TreeMap;
 import java.util.function.Function;
@@ -55,8 +56,8 @@ public class EnumMapUtilsTest {
     static final Map<String, Alphabet> STRING_TO_ENUM_RANGE = mapKeys(RANGE, TO_STRING);
     static final Map<Object, Alphabet> SOURCE = objectToEnumMap(new HashMap<>(),
             Alphabet::getAsciiValue, LAST_FUNCTION);
-    static final Map<Alphabet, Set<Object>> EXPECTED = mapValues(ALL,
-            v -> newSet(Integer.valueOf(v.getAsciiValue()), v.toString()));
+    static final Function<Alphabet, Set<Object>> EXPECTED_FUNCTION = v -> newSet(Integer.valueOf(v.getAsciiValue()), v.toString());
+    static final Map<Alphabet, Set<Object>> EXPECTED = mapValues(ALL, EXPECTED_FUNCTION);
     static final Map<Alphabet, Object> EXPECTED_SIMPLE = mapValues(ALL, LAST_FUNCTION);
 
     enum Alphabet {
@@ -146,7 +147,8 @@ public class EnumMapUtilsTest {
      * @param values the values to create a {@link Set} for.
      * @return a {@link Set} containing {@code values}.
      */
-    private static <T> Set<T> newSet(T... values) {
+    @SafeVarargs
+	private static <T> Set<T> newSet(T... values) {
         return Stream.of(values).collect(Collectors.toSet());
     }
 
@@ -160,7 +162,8 @@ public class EnumMapUtilsTest {
      *            {@link EnumMapUtils#modifyReverseEnumMap(Class, Function, Map)}.
      * @return the {@code result} {@link Map}.
      */
-    private static Map<Object, Alphabet> objectToEnumMap(Map<Object, Alphabet> result,
+    @SafeVarargs
+	private static Map<Object, Alphabet> objectToEnumMap(Map<Object, Alphabet> result,
             Function<Alphabet, Object>... mappers) {
         Stream.of(mappers).forEach(m -> EnumMapUtils.modifyReverseEnumMap(Alphabet.class, m, result));
         return result;
@@ -175,9 +178,7 @@ public class EnumMapUtilsTest {
      */
     private static Map<Integer, Alphabet> newDescendingTreeMap(Map<Integer, Alphabet> map) {
         Map<Integer, Alphabet> result = new TreeMap<>((a, b) -> b.intValue() - a.intValue());
-        if (map != null) {
-            result.putAll(map);
-        }
+        Optional.ofNullable(map).ifPresent(result::putAll);
         return result;
     }
 
