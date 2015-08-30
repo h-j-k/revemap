@@ -1,9 +1,10 @@
 # Revemap
 
+[![Build Status](https://travis-ci.org/h-j-k/revemap.svg?branch=master)](https://travis-ci.org/h-j-k/revemap) [Javadocs](https://h-j-k.github.io/revemap/apidocs)
+
 **Rev**erse **E**num **Map**: Java 8-based `EnumMap` utility class.
 
-Motivation
----
+# Motivation
 
 Creating a `Map<String, Enum>` lookup map in the good old days resembles the following:
 
@@ -32,8 +33,7 @@ In addition to the simplified example above, Revemap handles the following too:
 * Create `EnumMap`s with the `enum`s' `toString()` as map values.
 * Creating `Map<T, Enum>` maps given a `Function<Enum, T> mapper` for the keys.
 
-Bugs/feedback
----
+# Bugs/feedback
 
 Please make use of the GitHub features to report any bugs, issues, or even pull requests. :)
 
