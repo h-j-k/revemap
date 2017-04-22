@@ -2,7 +2,7 @@
 
 [![Build Status](https://travis-ci.org/h-j-k/revemap.svg?branch=master)](https://travis-ci.org/h-j-k/revemap) 
 [![codecov.io](http://codecov.io/github/h-j-k/revemap/coverage.svg?branch=master)](http://codecov.io/github/h-j-k/revemap?branch=master)
-[Javadocs](https://h-j-k.github.io/revemap/apidocs)
+[Javadocs](https://h-j-k.github.io/revemap/javadoc)
 
 **Rev**erse **E**num **Map**: Java 8-based `EnumMap` utility class.
 
