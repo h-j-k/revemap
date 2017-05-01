@@ -8,6 +8,8 @@
 
 **Rev**erse **E**num **Map**: Java 8-based `EnumMap` utility class.
 
+[Homepage](https://h-j-k.github.io/revemap)
+
 [GitHub project page](https://github.com/h-j-k/revemap)
 
 [Javadocs](https://h-j-k.github.io/revemap/javadoc)
