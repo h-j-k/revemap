@@ -129,7 +129,7 @@ public final class EnumMapUtils {
      */
     public static <T, E extends Enum<E>> Map<E, T> convertToSimpleEnumMap(final Map<T, E> map) {
         validateArguments(map);
-        return new EnumMap<E, T>(doMap(map.entrySet(), Entry::getValue, Entry::getKey, false));
+        return new EnumMap<>(doMap(map.entrySet(), Entry::getValue, Entry::getKey, false));
     }
 
     /**

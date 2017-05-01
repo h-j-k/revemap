@@ -2,6 +2,9 @@
 
 [![Build Status](https://travis-ci.org/h-j-k/revemap.svg?branch=master)](https://travis-ci.org/h-j-k/revemap) 
 [![codecov.io](http://codecov.io/github/h-j-k/revemap/coverage.svg?branch=master)](http://codecov.io/github/h-j-k/revemap?branch=master)
+[![Quality Gate](https://sonarqube.com/api/badges/gate?key=com.ikueb:revemap)](https://sonarqube.com/dashboard/?id=com.ikueb:revemap)
+[![Technical Debt Ratio](https://sonarqube.com/api/badges/measure?key=com.ikueb:revemap&metric=sqale_debt_ratio)](https://sonarqube.com/dashboard/?id=com.ikueb:revemap)
+[![Comments](https://sonarqube.com/api/badges/measure?key=com.ikueb:revemap&metric=comment_lines_density)](https://sonarqube.com/dashboard/?id=com.ikueb:revemap)
 
 **Rev**erse **E**num **Map**: Java 8-based `EnumMap` utility class.
 
