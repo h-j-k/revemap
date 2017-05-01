@@ -45,7 +45,7 @@ public final class EnumMapUtils {
      * Private constructor for utility class.
      */
     private EnumMapUtils() {
-        // intentionally blank
+        // empty
     }
 
     /**
@@ -54,22 +54,22 @@ public final class EnumMapUtils {
      * The merge function used to resolve collisions between values associated with the
      * same key picks the later one.
      *
-     * @param <T> the input {@link Set} type.
-     * @param <K> the required key type.
-     * @param <V> the required value type.
-     * @param set the {@link Set} to stream on.
-     * @param keyMapper the {@link Function} to use for mapping keys of type {@code K}
-     *            from the {@link Set}'s elements.
-     * @param valueMapper the {@link Function} to use for mapping values of type
-     *            {@code V} from the {@link Set}'s elements.
+     * @param <T>                the input {@link Set} type.
+     * @param <K>                the required key type.
+     * @param <V>                the required value type.
+     * @param set                the {@link Set} to stream on.
+     * @param keyMapper          the {@link Function} to use for mapping keys of type {@code K}
+     *                           from the {@link Set}'s elements.
+     * @param valueMapper        the {@link Function} to use for mapping values of type
+     *                           {@code V} from the {@link Set}'s elements.
      * @param checkDuplicateKeys {@code true} if a strict check on duplicate keys is
-     *            required, by comparing the resulting {@link Map#size()} with
-     *            {@code set.size()}.
+     *                           required, by comparing the resulting {@link Map#size()} with
+     *                           {@code set.size()}.
      * @return a {@link Map} with mappings {@code K → V}.
      * @see Collectors#toMap(Function, Function, java.util.function.BinaryOperator)
      */
-    private static <T, K, V> Map<K, V> doMap(final Set<T> set, final Function<T, K> keyMapper,
-            final Function<T, V> valueMapper, boolean checkDuplicateKeys) {
+    private static <T, K, V> Map<K, V> doMap(Set<T> set, Function<T, K> keyMapper,
+                                             Function<T, V> valueMapper, boolean checkDuplicateKeys) {
         return Optional.of(set.stream().collect(Collectors.toMap(keyMapper, valueMapper, (a, b) -> b)))
                 .filter(m -> !checkDuplicateKeys || m.size() == set.size())
                 .orElseThrow(DuplicateKeysException::new);
@@ -81,7 +81,7 @@ public final class EnumMapUtils {
      *
      * @param args the arguments to check for {@code null}.
      */
-    private static void validateArguments(final Object... args) {
+    private static void validateArguments(Object... args) {
         if (Objects.isNull(args) || !Stream.of(args).allMatch(Objects::nonNull)) {
             throw new IllegalArgumentException(new NullPointerException());
         }
@@ -96,21 +96,21 @@ public final class EnumMapUtils {
      * Implementation note: the resulting map is an instance of {@link EnumMap}, and the
      * values' {@link Set} are accumulated with {@link Collectors#toSet()}.
      *
-     * @param <T> the key type of the source {@link Map}.
-     * @param <E> the {@code enum} type.
+     * @param <T>     the key type of the source {@link Map}.
+     * @param <E>     the {@code enum} type.
      * @param forEnum the {@code enum} to represent.
-     * @param map the {@link Map} with mappings {@code T → E}.
+     * @param map     the {@link Map} with mappings {@code T → E}.
      * @return a {@link Map} with mappings {@code E → Set<T>}.
      * @see #convertToSimpleEnumMap(Map)
      * @see Collectors#groupingBy(Function, java.util.stream.Collector)
      * @see Collectors#toSet()
      */
-    public static <T, E extends Enum<E>> Map<E, Set<T>> convertToEnumMap(final Class<E> forEnum,
-            final Map<T, E> map) {
+    public static <T, E extends Enum<E>> Map<E, Set<T>> convertToEnumMap(Class<E> forEnum,
+                                                                         Map<T, E> map) {
         validateArguments(forEnum, map);
         return map.entrySet().stream().collect(Collectors.groupingBy(Entry::getValue,
-                                () -> new EnumMap<>(forEnum),
-                                Collectors.mapping(Entry::getKey, Collectors.toSet())));
+                () -> new EnumMap<>(forEnum),
+                Collectors.mapping(Entry::getKey, Collectors.toSet())));
     }
 
     /**
@@ -127,25 +127,25 @@ public final class EnumMapUtils {
      * @return a {@link Map} with mappings {@code E → T}.
      * @see #convertToEnumMap(Class, Map)
      */
-    public static <T, E extends Enum<E>> Map<E, T> convertToSimpleEnumMap(final Map<T, E> map) {
+    public static <T, E extends Enum<E>> Map<E, T> convertToSimpleEnumMap(Map<T, E> map) {
         validateArguments(map);
-        return new EnumMap<>(doMap(map.entrySet(), Entry::getValue, Entry::getKey, false));
+        return new EnumMap<E, T>(doMap(map.entrySet(), Entry::getValue, Entry::getKey, false));
     }
 
     /**
      * Creates a {@link Map} with mappings {@code E → T}, where values are derived using
      * a {@link Function}.
      *
-     * @param <T> the value type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param forEnum the {@code enum} to represent.
+     * @param <T>        the value type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param forEnum    the {@code enum} to represent.
      * @param enumMapper the {@link Function} to use to derive the values for the
-     *            resulting {@link Map}.
+     *                   resulting {@link Map}.
      * @return a {@link Map} with mappings {@code E → T}.
      * @see #createEnumMap(Set, Function)
      */
-    public static <T, E extends Enum<E>> Map<E, T> createEnumMap(final Class<E> forEnum,
-            final Function<E, T> enumMapper) {
+    public static <T, E extends Enum<E>> Map<E, T> createEnumMap(Class<E> forEnum,
+                                                                 Function<E, T> enumMapper) {
         return createEnumMap(EnumSet.allOf(forEnum), enumMapper);
     }
 
@@ -155,15 +155,15 @@ public final class EnumMapUtils {
      * <p>
      * Implementation note: the resulting map is an instance of {@link EnumMap}.
      *
-     * @param <T> the value type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param enumSet the {@link Set} of {@code enum} to represent.
+     * @param <T>        the value type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param enumSet    the {@link Set} of {@code enum} to represent.
      * @param enumMapper the {@link Function} to use to derive the values for the
-     *            resulting {@link Map}.
+     *                   resulting {@link Map}.
      * @return a {@link Map} with mappings {@code E → T}.
      */
-    public static <T, E extends Enum<E>> Map<E, T> createEnumMap(final Set<E> enumSet,
-            final Function<E, T> enumMapper) {
+    public static <T, E extends Enum<E>> Map<E, T> createEnumMap(Set<E> enumSet,
+                                                                 Function<E, T> enumMapper) {
         validateArguments(enumSet, enumMapper);
         return new EnumMap<>(doMap(enumSet, Function.identity(), enumMapper, false));
     }
@@ -172,12 +172,12 @@ public final class EnumMapUtils {
      * Creates a {@link Map} of {@code enums} as keys and their {@link Enum#toString()}
      * representation as values.
      *
-     * @param <E> the {@code enum} type.
+     * @param <E>     the {@code enum} type.
      * @param forEnum the {@code enum} to represent.
      * @return a {@link Map} with mappings {@code E → String}.
      * @see #createEnumMap(Set)
      */
-    public static <E extends Enum<E>> Map<E, String> createEnumMap(final Class<E> forEnum) {
+    public static <E extends Enum<E>> Map<E, String> createEnumMap(Class<E> forEnum) {
         return createEnumMap(EnumSet.allOf(forEnum));
     }
 
@@ -185,12 +185,12 @@ public final class EnumMapUtils {
      * Creates a {@link Map} of {@code enums} as keys and their {@link Enum#toString()}
      * representation as values.
      *
-     * @param <E> the {@code enum} type.
+     * @param <E>     the {@code enum} type.
      * @param enumSet the {@link Set} of {@code enum} to represent.
      * @return a {@link Map} with mappings {@code E → String}.
      * @see #createEnumMap(Class, Function)
      */
-    public static <E extends Enum<E>> Map<E, String> createEnumMap(final Set<E> enumSet) {
+    public static <E extends Enum<E>> Map<E, String> createEnumMap(Set<E> enumSet) {
         return createEnumMap(enumSet, Enum::toString);
     }
 
@@ -200,16 +200,16 @@ public final class EnumMapUtils {
      * <p>
      * Implementation note: the resulting map is an instance of {@link HashMap}.
      *
-     * @param <T> the key type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param forEnum the {@code enum} to represent.
+     * @param <T>        the key type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param forEnum    the {@code enum} to represent.
      * @param enumMapper the {@link Function} to use for mapping the {@link Map}'s keys.
      * @return a {@link Map} with mappings {@code T → E}.
-     * @see #createReverseEnumMap(Set, Function)
      * @throws DuplicateKeysException if the {@code enumMapper} produces duplicate keys.
+     * @see #createReverseEnumMap(Set, Function)
      */
-    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(final Class<E> forEnum,
-            final Function<E, T> enumMapper) {
+    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(Class<E> forEnum,
+                                                                        Function<E, T> enumMapper) {
         return createReverseEnumMap(EnumSet.allOf(forEnum), enumMapper);
     }
 
@@ -219,16 +219,16 @@ public final class EnumMapUtils {
      * <p>
      * Implementation note: the resulting map is an instance of {@link HashMap}.
      *
-     * @param <T> the key type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param enumSet the {@link Set} of {@code enum} to represent.
+     * @param <T>        the key type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param enumSet    the {@link Set} of {@code enum} to represent.
      * @param enumMapper the {@link Function} to use for mapping the {@link Map}'s keys.
      * @return a {@link Map} with mappings {@code T → E}.
-     * @see #modifyReverseEnumMap(Set, Function, Map)
      * @throws DuplicateKeysException if the {@code enumMapper} produces duplicate keys.
+     * @see #modifyReverseEnumMap(Set, Function, Map)
      */
-    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(final Set<E> enumSet,
-            final Function<E, T> enumMapper) {
+    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(Set<E> enumSet,
+                                                                        Function<E, T> enumMapper) {
         return modifyReverseEnumMap(enumSet, enumMapper, new HashMap<>());
     }
 
@@ -236,14 +236,14 @@ public final class EnumMapUtils {
      * Creates a {@link Map} of {@code enums} as values and their
      * {@link Enum#toString()} representation as keys.
      *
-     * @param <E> the {@code enum} type.
+     * @param <E>     the {@code enum} type.
      * @param forEnum the {@code enum} to represent.
      * @return a {@link Map} with mappings {@code String → E}.
-     * @see #createReverseEnumMap(Set)
      * @throws DuplicateKeysException if {@code E}'s {@link #toString()} produces
-     *             duplicate keys.
+     *                                duplicate keys.
+     * @see #createReverseEnumMap(Set)
      */
-    public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(final Class<E> forEnum) {
+    public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(Class<E> forEnum) {
         return createReverseEnumMap(EnumSet.allOf(forEnum));
     }
 
@@ -255,9 +255,9 @@ public final class EnumMapUtils {
      * @param map the {@link Map} to derive the mappings from.
      * @return a {@link Map} with mappings {@code T → E}.
      * @throws DuplicateKeysException if there is more than one {@code E → T} mapping,
-     *             producing duplicate keys.
+     *                                producing duplicate keys.
      */
-    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(final Map<E, T> map) {
+    public static <T, E extends Enum<E>> Map<T, E> createReverseEnumMap(Map<E, T> map) {
         validateArguments(map);
         return doMap(map.entrySet(), Entry::getValue, Entry::getKey, true);
     }
@@ -266,14 +266,14 @@ public final class EnumMapUtils {
      * Creates a {@link Map} of {@code enums} as values and their
      * {@link Enum#toString()} representation as keys.
      *
-     * @param <E> the {@code enum} type.
+     * @param <E>     the {@code enum} type.
      * @param enumSet the {@link Set} of {@code enum} to represent.
      * @return a {@link Map} with mappings {@code String → E}.
-     * @see #createReverseEnumMap(Set, Function)
      * @throws DuplicateKeysException if {@code E}'s {@link #toString()} produces
-     *             duplicate keys.
+     *                                duplicate keys.
+     * @see #createReverseEnumMap(Set, Function)
      */
-    public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(final Set<E> enumSet) {
+    public static <E extends Enum<E>> Map<String, E> createReverseEnumMap(Set<E> enumSet) {
         return createReverseEnumMap(enumSet, Enum::toString);
     }
 
@@ -281,17 +281,17 @@ public final class EnumMapUtils {
      * Modifies a {@link Map} by putting mappings {@code T → E}, where keys are derived
      * using a {@link Function}.
      *
-     * @param <T> the key type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param forEnum the {@code enum} to represent.
+     * @param <T>        the key type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param forEnum    the {@code enum} to represent.
      * @param enumMapper the {@link Function} to use for mapping the {@link Map}'s keys.
-     * @param result the {@link Map} to put the mappings to.
+     * @param result     the {@link Map} to put the mappings to.
      * @return the {@code result} {@link Map}.
-     * @see #modifyReverseEnumMap(Set, Function, Map)
      * @throws DuplicateKeysException if the {@code enumMapper} produces duplicate keys.
+     * @see #modifyReverseEnumMap(Set, Function, Map)
      */
-    public static <T, E extends Enum<E>> Map<T, E> modifyReverseEnumMap(final Class<E> forEnum,
-            final Function<E, T> enumMapper, final Map<T, E> result) {
+    public static <T, E extends Enum<E>> Map<T, E> modifyReverseEnumMap(Class<E> forEnum,
+                                                                        Function<E, T> enumMapper, Map<T, E> result) {
         return modifyReverseEnumMap(EnumSet.allOf(forEnum), enumMapper, result);
     }
 
@@ -299,16 +299,16 @@ public final class EnumMapUtils {
      * Modifies a {@link Map} by putting mappings {@code T → E}, where keys are derived
      * using a {@link Function}.
      *
-     * @param <T> the key type of the resulting {@link Map}.
-     * @param <E> the {@code enum} type.
-     * @param enumSet the {@link Set} of {@code enum} to put.
+     * @param <T>        the key type of the resulting {@link Map}.
+     * @param <E>        the {@code enum} type.
+     * @param enumSet    the {@link Set} of {@code enum} to put.
      * @param enumMapper the {@link Function} to use for mapping the {@link Map}'s keys.
-     * @param result the {@link Map} to put the mappings to.
+     * @param result     the {@link Map} to put the mappings to.
      * @return the {@code result} {@link Map}.
      * @throws DuplicateKeysException if the {@code enumMapper} produces duplicate keys.
      */
-    public static <T, E extends Enum<E>> Map<T, E> modifyReverseEnumMap(final Set<E> enumSet,
-            final Function<E, T> enumMapper, final Map<T, E> result) {
+    public static <T, E extends Enum<E>> Map<T, E> modifyReverseEnumMap(Set<E> enumSet,
+                                                                        Function<E, T> enumMapper, Map<T, E> result) {
         validateArguments(enumSet, enumMapper, result);
         result.putAll(doMap(enumSet, enumMapper, Function.identity(), true));
         return result;
