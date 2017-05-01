@@ -1,21 +1,21 @@
 group = 'com.ikueb'
 version = '0.3.0-SNAPSHOT'
 
-plugins {
-    id "org.sonarqube" version "2.3"
-}
-
 apply plugin: 'java'
 apply plugin: 'idea'
 apply plugin: 'jacoco'
-
+apply plugin: "org.sonarqube"
 
 sourceCompatibility = 1.8
 
 repositories {
     mavenCentral()
+    maven {
+        url "https://plugins.gradle.org/m2/"
+    }
 }
 dependencies {
+    classpath group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '[2.3,)'
     compile group: 'org.slf4j', name: 'slf4j-api', version:'[1.7,)'
     compile group: 'ch.qos.logback', name: 'logback-classic', version:'[1.1,)'
     testCompile group: 'org.testng', name: 'testng', version:'[6.10,)'
