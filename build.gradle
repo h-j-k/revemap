@@ -14,7 +14,7 @@ repositories {
     }
 }
 dependencies {
-    classpath group: 'org.sonarsource.scanner.gradle', name: 'sonarqube-gradle-plugin', version: '[2.3,)'
+    classpath 'org.sonarsource.scanner.gradle:sonarqube-gradle-plugin:2.3'
     compile group: 'org.slf4j', name: 'slf4j-api', version:'[1.7,)'
     compile group: 'ch.qos.logback', name: 'logback-classic', version:'[1.1,)'
     testCompile group: 'org.testng', name: 'testng', version:'[6.10,)'
