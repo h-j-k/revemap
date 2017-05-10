@@ -15,14 +15,8 @@
  */
 package com.ikueb.revemap;
 
-import java.util.EnumMap;
-import java.util.EnumSet;
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 import java.util.Map.Entry;
-import java.util.Objects;
-import java.util.Optional;
-import java.util.Set;
 import java.util.function.Function;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
@@ -50,9 +44,6 @@ public final class EnumMapUtils {
 
     /**
      * Create a {@link Map} by applying key and value mappers to the {@link Set}.
-     * <p>
-     * The merge function used to resolve collisions between values associated with the
-     * same key picks the later one.
      *
      * @param <T>                the input {@link Set} type.
      * @param <K>                the required key type.
@@ -66,6 +57,7 @@ public final class EnumMapUtils {
      *                           required, by comparing the resulting {@link Map#size()} with
      *                           {@code set.size()}.
      * @return a {@link Map} with mappings {@code K → V}.
+     * @implNote the merge function used to resolve collisions between duplicate keys picks the later value encountered
      * @see Collectors#toMap(Function, Function, java.util.function.BinaryOperator)
      */
     private static <T, K, V> Map<K, V> doMap(Set<T> set, Function<T, K> keyMapper,
@@ -92,9 +84,6 @@ public final class EnumMapUtils {
      * <em>while considering</em> the possibility of duplicate {@code E → T} mappings.
      * As such, the values of the resulting {@link Map} are of type {@link Set}
      * {@code <T>}.
-     * <p>
-     * Implementation note: the resulting map is an instance of {@link EnumMap}, and the
-     * values' {@link Set} are accumulated with {@link Collectors#toSet()}.
      *
      * @param <T>     the key type of the source {@link Map}.
      * @param <E>     the {@code enum} type.
@@ -118,8 +107,6 @@ public final class EnumMapUtils {
      * <em>without considering</em> the possibility of duplicate {@code E → T} mappings.
      * As such, the values of the resulting {@link Map} are of type {@code T}, with
      * mappings streamed later overriding the earlier ones.
-     * <p>
-     * Implementation note: the resulting map is an instance of {@link EnumMap}.
      *
      * @param <T> the key type of the source {@link Map}.
      * @param <E> the {@code enum} type.
@@ -152,8 +139,6 @@ public final class EnumMapUtils {
     /**
      * Creates a {@link Map} with mappings {@code E → T}, where values are derived using
      * a {@link Function}.
-     * <p>
-     * Implementation note: the resulting map is an instance of {@link EnumMap}.
      *
      * @param <T>        the value type of the resulting {@link Map}.
      * @param <E>        the {@code enum} type.
@@ -197,8 +182,6 @@ public final class EnumMapUtils {
     /**
      * Creates a {@link Map} with mappings {@code T → E}, where the keys are mapped
      * using a {@link Function}.
-     * <p>
-     * Implementation note: the resulting map is an instance of {@link HashMap}.
      *
      * @param <T>        the key type of the resulting {@link Map}.
      * @param <E>        the {@code enum} type.
@@ -216,8 +199,6 @@ public final class EnumMapUtils {
     /**
      * Creates a {@link Map} with mappings {@code T → E}, where the keys are mapped
      * using a {@link Function}.
-     * <p>
-     * Implementation note: the resulting map is an instance of {@link HashMap}.
      *
      * @param <T>        the key type of the resulting {@link Map}.
      * @param <E>        the {@code enum} type.
